@@ -1,0 +1,1148 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+.phone-wrap { display: flex; justify-content: center; padding: 1.5rem 0; font-family: var(--font-sans); --color-background-primary: #1c1c1e; --color-text-primary: #f0f0f0; --color-text-secondary: #9a9a9e; --color-border-tertiary: #2e2e30; --color-border-secondary: #3a3a3c; }
+.phone { width: 320px; background: #18181a; border-radius: 44px; padding: 10px; box-shadow: 0 0 0 1px #2c2c2e; }
+.screen { background: #0e0e10; border-radius: 36px; overflow: hidden; height: 620px; display: flex; flex-direction: column; position: relative; }
+.view { display: none; flex-direction: column; height: 100%; }
+.view.active { display: flex; }
+.status-bar { background: #1a1a1a; padding: 10px 20px 6px; display: flex; justify-content: space-between; }
+.status-bar span { color: #fff; font-size: 10px; }
+.header { background: #1a1a1a; padding: 8px 16px 12px; display: flex; align-items: center; justify-content: space-between; }
+.header-title { color: #fff; font-size: 14px; font-weight: 500; letter-spacing: 0.5px; }
+.header-back { color: #fff; font-size: 20px; cursor: pointer; padding: 2px 4px; background: none; border: none; }
+.scroll-content { flex: 1; overflow-y: auto; padding: 12px 12px 6px; }
+.welcome { background: #E30613; border-radius: 14px; padding: 14px 16px; margin-bottom: 12px; }
+.welcome p { color: #fff; font-size: 12px; opacity: 0.85; }
+.welcome h2 { color: #fff; font-size: 15px; font-weight: 500; margin-top: 2px; }
+.section-label { font-size: 10px; font-weight: 500; color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 8px; margin-left: 2px; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.card { border-radius: 14px; padding: 12px 10px; display: flex; flex-direction: column; gap: 4px; cursor: pointer; transition: transform 0.12s; border: none; text-align: left; width: 100%; }
+.card:active { transform: scale(0.95); }
+.card i { font-size: 20px; margin-bottom: 2px; }
+.card-title { font-size: 11px; font-weight: 500; line-height: 1.3; }
+.card-desc { font-size: 10px; opacity: 0.72; line-height: 1.4; }
+.card-wide { grid-column: span 2; flex-direction: row; align-items: center; gap: 12px; }
+.card-wide .card-text { flex: 1; }
+.card-wide i { font-size: 24px; flex-shrink: 0; }
+.c-pink { background: #34202a; color: #f3a8c4; }
+.c-green { background: #1f2f16; color: #a9d96b; }
+.c-blue { background: #16263a; color: #7ab8e8; }
+.c-amber { background: #3a2c12; color: #f0c84a; }
+.c-teal { background: #133029; color: #6acab0; }
+.c-purple { background: #221f3a; color: #a89be8; }
+.alert-dot { width: 7px; height: 7px; background: #E30613; border-radius: 50%; display: inline-block; margin-left: 4px; vertical-align: middle; }
+.bottom-nav { background: #1a1a1c; border-top: 0.5px solid #2e2e30; display: flex; justify-content: space-around; padding: 6px 0 8px; flex-shrink: 0; }
+.nav-item { display: flex; flex-direction: column; align-items: center; gap: 2px; cursor: pointer; padding: 2px 8px; background: none; border: none; }
+.nav-item i { font-size: 19px; color: #aaa; }
+.nav-item.active i { color: #E30613; }
+.nav-item span { font-size: 9px; color: #aaa; }
+.nav-item.active span { color: #E30613; }
+.home-bar { background: #1a1a1c; display: flex; justify-content: center; padding: 5px 0 4px; flex-shrink: 0; }
+.home-bar div { width: 90px; height: 4px; background: #4a4a4d; border-radius: 4px; }
+.detail-hero { border-radius: 14px; padding: 20px 16px; margin-bottom: 14px; display: flex; align-items: center; gap: 14px; }
+.detail-hero i { font-size: 36px; }
+.detail-hero h2 { font-size: 17px; font-weight: 500; }
+.detail-hero p { font-size: 11px; opacity: 0.75; margin-top: 3px; }
+.info-card { background: var(--color-background-primary); border-radius: 12px; border: 0.5px solid var(--color-border-tertiary); padding: 12px 14px; margin-bottom: 8px; }
+.info-card h3 { font-size: 13px; font-weight: 500; color: var(--color-text-primary); margin-bottom: 4px; }
+.info-card p { font-size: 12px; color: var(--color-text-secondary); line-height: 1.5; }
+.info-card .tag { display: inline-block; font-size: 10px; border-radius: 6px; padding: 2px 8px; margin-top: 6px; font-weight: 500; }
+.action-btn { width: 100%; border-radius: 12px; padding: 11px; font-size: 13px; font-weight: 500; border: none; cursor: pointer; margin-bottom: 8px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform 0.1s; }
+.action-btn:active { transform: scale(0.97); }
+.btn-red { background: #E30613; color: #fff; }
+.btn-outline { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-secondary); }
+.check-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); cursor: pointer; }
+.check-row:last-child { border-bottom: none; }
+.check-row i { font-size: 18px; color: var(--color-text-secondary); }
+.check-row p { font-size: 12px; color: var(--color-text-primary); flex: 1; }
+.emoji-row { display: flex; justify-content: space-around; padding: 8px 0; }
+.emoji-btn { font-size: 26px; background: none; border: 2px solid transparent; border-radius: 50%; padding: 6px; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
+.emoji-btn.sel { border-color: #E30613; transform: scale(1.15); }
+.prog-bar-wrap { background: #2e2e30; border-radius: 6px; height: 8px; margin-top: 6px; overflow: hidden; }
+.prog-bar { height: 8px; border-radius: 6px; background: #E30613; }
+.badge-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+.badge { background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); border-radius: 12px; padding: 10px 6px; text-align: center; }
+.badge i { font-size: 20px; display: block; margin-bottom: 4px; }
+.badge span { font-size: 10px; color: var(--color-text-secondary); }
+.btn-back { width: 100%; border-radius: 12px; padding: 10px; font-size: 13px; font-weight: 500; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); color: var(--color-text-secondary); cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 4px; margin-bottom: 8px; transition: transform 0.1s; }
+.btn-back:active { transform: scale(0.97); }
+/* ── LANDING (Accesos Directos) ── */
+.landing-section-header { display: flex; justify-content: space-between; align-items: center; padding: 10px 12px 6px; }
+.landing-section-label { font-size: 11px; font-weight: 500; color: var(--color-text-primary); }
+.landing-sort-icon { font-size: 16px; color: var(--color-text-secondary); }
+.access-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 0 10px 10px; }
+.ac { border-radius: 14px; padding: 12px 10px 10px; display: flex; flex-direction: column; gap: 6px; position: relative; cursor: default; }
+.ac.interactive { cursor: pointer; transition: transform 0.12s; }
+.ac.interactive:active { transform: scale(0.95); }
+.ac-icon-wrap { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+.ac-title { font-size: 11px; font-weight: 600; color: #f0f0f0; line-height: 1.3; }
+.ac-arrow { position: absolute; top: 10px; right: 10px; font-size: 13px; }
+.ac-badge { position: absolute; top: 8px; right: 8px; background: #0c447c; color: #fff; font-size: 9px; font-weight: 700; border-radius: 10px; padding: 1px 5px; }
+.ac-peach { background: #3a2614; } .ac-peach .ac-icon-wrap { background: #f5b97e; color: #7a3000; }
+.ac-amber2 { background: #3a2c10; } .ac-amber2 .ac-icon-wrap { background: #f5c842; color: #5a3a00; }
+.ac-yellow { background: #353010; } .ac-yellow .ac-icon-wrap { background: #e8d84a; color: #4a3c00; }
+.ac-green2 { background: #213a14; } .ac-green2 .ac-icon-wrap { background: #a8d96b; color: #2a4a00; }
+.ac-lavender { background: #221f3a; } .ac-lavender .ac-icon-wrap { background: #9b96e8; color: #2a246a; }
+.ac-rose { background: #3a1f2a; } .ac-rose .ac-icon-wrap { background: #e87aab; color: #5a1030; }
+.ac-orange2 { background: #3a2414; } .ac-orange2 .ac-icon-wrap { background: #f5a06a; color: #6a2a00; }
+.ac-sage { background: #1f3a18; } .ac-sage .ac-icon-wrap { background: #7ac46a; color: #1a4a10; }
+.ac-sky { background: #14283a; } .ac-sky .ac-icon-wrap { background: #7ab8e8; color: #0a3060; }
+.ac-lilac { background: #271f3a; } .ac-lilac .ac-icon-wrap { background: #a882e8; color: #30186a; }
+.ac-pink2 { background: #3a1f30; } .ac-pink2 .ac-icon-wrap { background: #e880c0; color: #5a1050; }
+.ac-cream { background: #3a3014; } .ac-cream .ac-icon-wrap { background: #f0c84a; color: #5a3800; }
+.ac-red2 { background: #3a1818; } .ac-red2 .ac-icon-wrap { background: #e87070; color: #5a1010; }
+.ac-teal2 { background: #143a30; } .ac-teal2 .ac-icon-wrap { background: #6acab0; color: #0a4030; }
+.ac-bienestar { background: linear-gradient(135deg, #E30613 0%, #ff4444 100%); cursor: pointer; transition: transform 0.12s; }
+.ac-bienestar:active { transform: scale(0.95); }
+.ac-bienestar .ac-icon-wrap { background: rgba(255,255,255,0.25); color: #fff; }
+.ac-bienestar .ac-title { color: #fff; font-size: 12px; }
+.ac-bienestar .ac-arrow { color: rgba(255,255,255,0.8); }
+.ac-bienestar .ac-desc { font-size: 9px; color: rgba(255,255,255,0.8); margin-top: -2px; }
+.btn-cerrar { display: block; margin: 4px 10px 6px; width: calc(100% - 20px); padding: 10px; border-radius: 12px; border: 0.5px solid #3a3a3c; background: #1c1c1e; font-size: 13px; color: #ff4d5e; font-weight: 500; cursor: default; text-align: center; }
+.landing-footer { text-align: center; padding: 2px 0 6px; }
+.landing-footer p { font-size: 10px; color: var(--color-text-secondary); }
+.toast { position: absolute; bottom: 90px; left: 50%; transform: translateX(-50%); background: #1a1a1a; color: #fff; font-size: 11px; padding: 8px 16px; border-radius: 20px; white-space: nowrap; opacity: 0; transition: opacity 0.3s; pointer-events: none; z-index: 99; }
+.toast.show { opacity: 1; }
+.card-icon { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 2px; }
+.c-pink .card-icon { background: rgba(243,168,196,0.16); }
+.c-green .card-icon { background: rgba(169,217,107,0.16); }
+.c-blue .card-icon { background: rgba(122,184,232,0.16); }
+.c-amber .card-icon { background: rgba(240,200,74,0.16); }
+.c-teal .card-icon { background: rgba(106,202,176,0.16); }
+.c-purple .card-icon { background: rgba(168,155,232,0.16); }
+.personalize-link { display: flex; align-items: center; gap: 6px; background: none; border: none; color: var(--color-text-secondary); font-size: 11px; margin: -2px 2px 12px; cursor: pointer; padding: 0; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
+.toggle-row:last-child { border-bottom: none; }
+.toggle-row p { font-size: 12px; color: var(--color-text-primary); }
+.toggle-desc { display: block; font-size: 10px; color: var(--color-text-secondary); margin-top: 2px; }
+.switch { width: 42px; height: 24px; border-radius: 14px; background: #3a3a3c; position: relative; cursor: pointer; flex-shrink: 0; transition: background 0.2s; }
+.switch .knob { width: 18px; height: 18px; border-radius: 50%; background: #f0f0f0; position: absolute; top: 3px; left: 3px; transition: left 0.2s; }
+.switch.on { background: #E30613; }
+.switch.on .knob { left: 21px; }
+.video-card { display: flex; align-items: center; gap: 10px; padding: 8px; border-radius: 12px; background: var(--color-background-primary); border: 0.5px solid var(--color-border-tertiary); margin-bottom: 8px; cursor: pointer; transition: transform 0.1s; }
+.video-card:active { transform: scale(0.97); }
+.video-thumb { width: 54px; height: 54px; border-radius: 10px; background: #1f2f16; color: #a9d96b; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+.v-title { font-size: 12px; font-weight: 500; color: var(--color-text-primary); }
+.v-meta { font-size: 10px; color: var(--color-text-secondary); margin-top: 2px; }
+.chat-area { display: flex; flex-direction: column; gap: 8px; padding: 4px 0 12px; }
+.bubble { max-width: 78%; padding: 8px 12px; border-radius: 14px; font-size: 12px; line-height: 1.4; }
+.bubble.them { background: var(--color-background-primary); color: var(--color-text-primary); border: 0.5px solid var(--color-border-tertiary); align-self: flex-start; border-bottom-left-radius: 4px; }
+.bubble.me { background: #E30613; color: #fff; align-self: flex-end; border-bottom-right-radius: 4px; }
+.chat-input-row { display: flex; gap: 8px; align-items: center; padding-top: 6px; margin-top: auto; }
+.chat-input { flex: 1; background: var(--color-background-primary); border: 0.5px solid var(--color-border-secondary); border-radius: 20px; padding: 9px 14px; font-size: 12px; color: var(--color-text-secondary); }
+.chat-send { width: 36px; height: 36px; border-radius: 50%; background: #E30613; color: #fff; border: none; display: flex; align-items: center; justify-content: center; font-size: 15px; cursor: pointer; flex-shrink: 0; }
+
+<style>
+/* ── TOGGLE DE TEMA ── */
+.theme-toggle-wrap {
+  display: flex; justify-content: center; padding: 0 0 12px;
+}
+.theme-btn {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: #1c1c1e; border: 1px solid #3a3a3c;
+  color: #f0f0f0; font-size: 12px; font-weight: 500;
+  border-radius: 20px; padding: 7px 16px; cursor: pointer;
+  transition: all 0.2s; font-family: inherit;
+}
+.theme-btn:hover { background: #2c2c2e; }
+.theme-btn .t-icon { font-size: 15px; }
+
+/* ── MODO CLARO — overrides sobre .phone-wrap.light ── */
+.phone-wrap.light {
+  --color-background-primary: #ffffff;
+  --color-text-primary: #1a1a1a;
+  --color-text-secondary: #6b6b6b;
+  --color-border-tertiary: #e5e5ea;
+  --color-border-secondary: #c8c8cc;
+}
+.light .phone { background: #e0e0e0; box-shadow: 0 0 0 1px #bbb; }
+.light .screen { background: #f7f7f7; }
+.light .bottom-nav { background: #fff; border-top-color: #ddd; }
+.light .home-bar { background: #fff; }
+.light .home-bar div { background: #ccc; }
+.light .prog-bar-wrap { background: #e8e8e8; }
+.light .ac-title { color: #1a1a1a; }
+.light .btn-cerrar { background: #fff; border-color: #ddd; color: #E30613; }
+.light .switch { background: #c8c8cc; }
+.light .switch.on { background: #E30613; }
+.light .switch .knob { background: #fff; }
+.light .nav-item i, .light .nav-item span { color: #aaa; }
+.light .nav-item.active i, .light .nav-item.active span { color: #E30613; }
+.light .toast { background: #1a1a1a; }
+
+/* Tarjetas de bienestar — claro */
+.light .c-pink { background: #fbeaf0; color: #72243e; }
+.light .c-green { background: #eaf3de; color: #27500a; }
+.light .c-blue { background: #e6f1fb; color: #0c447c; }
+.light .c-amber { background: #faeeda; color: #633806; }
+.light .c-teal { background: #e1f5ee; color: #085041; }
+.light .c-purple { background: #eeedfe; color: #3c3489; }
+
+/* Accesos directos — claro */
+.light .ac-peach { background: #fde9d9; } .light .ac-amber2 { background: #fdf0d5; }
+.light .ac-yellow { background: #fdf8d5; } .light .ac-green2 { background: #edf7e0; }
+.light .ac-lavender { background: #eeedfb; } .light .ac-rose { background: #fbe8ef; }
+.light .ac-orange2 { background: #fde8d5; } .light .ac-sage { background: #e8f5e2; }
+.light .ac-sky { background: #e2f0fb; } .light .ac-lilac { background: #ece8fb; }
+.light .ac-pink2 { background: #fce8f3; } .light .ac-cream { background: #fdf5e0; }
+.light .ac-red2 { background: #fde8e8; } .light .ac-teal2 { background: #e0f4ef; }
+
+/* Override inline backgrounds de accesos (fila 4 y 7) */
+.light [style*="background:#3a2218"] { background: #fde8e0 !important; }
+.light [style*="background:#3a2414"] { background: #fde8d5 !important; }
+
+/* Colores de flecha inline en landing — claro */
+.light .ac-peach [style*="color:#E30613"] { color: #E30613 !important; }
+
+/* Tags claro */
+.light [style*="background:#34202a;color:#f3a8c4"] { background: #fbeaf0 !important; color: #72243e !important; }
+.light [style*="background:#1f2f16;color:#a9d96b"] { background: #eaf3de !important; color: #27500a !important; }
+.light [style*="background:#133029;color:#6acab0"] { background: #e1f5ee !important; color: #085041 !important; }
+.light [style*="background:#3a2c12;color:#f0c84a"] { background: #faeeda !important; color: #633806 !important; }
+.light [style*="background:#16263a;color:#7ab8e8"] { background: #e6f1fb !important; color: #0c447c !important; }
+.light [style*="background:#221f3a;color:#a89be8"] { background: #eeedfe !important; color: #3c3489 !important; }
+.light [style*="background:#3a1414;color:#ff8080"] { background: #fcebeb !important; color: #791f1f !important; }
+
+/* Barras de progreso inline — claro */
+.light [style*="background:#2f7dc4"] { background: #0c447c !important; }
+.light [style*="background:#4f9a1f"] { background: #27500a !important; }
+
+/* Pares: fondos de avatares y disponibilidad — claro */
+.light [style*="background:#221f3a"] { background: #eeedfe !important; }
+.light [style*="background:#16263a"] { background: #e6f1fb !important; }
+.light [style*="background:#3a2c12"] { background: #faeeda !important; }
+
+/* Contador de beneficios — claro */
+.light [style*="background:#3a2c12;border-radius:12px;padding:10px"] { background: #faeeda !important; }
+
+/* Video-thumb — claro */
+.light .video-thumb { background: #eaf3de; color: #27500a; }
+.light [style*="background:#133029;color:#6acab0"].video-thumb { background: #e1f5ee !important; color: #085041 !important; }
+.light [style*="background:#3a2c12;color:#f0c84a"].video-thumb { background: #faeeda !important; color: #633806 !important; }
+
+/* Perfil — claro */
+.light [style*="background:#3a2c12;display:flex;align-items:center;justify-content:center;font-size:13px"] { background: #faeeda !important; color: #633806 !important; }
+.light [style*="background:#16263a;display:flex;align-items:center;justify-content:center;font-size:13px"] { background: #e6f1fb !important; color: #0c447c !important; }
+
+/* Chat input — claro */
+.light .chat-input { color: #1a1a1a; }
+
+/* Barra del chat bottom — claro */
+.light [style*="background:var(--color-background-primary)"] { }
+
+/* Botón toggle — modo claro activo */
+.phone-wrap.light + .theme-toggle-wrap .theme-btn,
+.theme-toggle-wrap.for-light .theme-btn {
+  background: #f0f0f0; border-color: #ccc; color: #1a1a1a;
+}
+</style>
+
+/* ── OPCIONES DE AUTOEVALUACIÓN ── */
+.eval-opt { display: flex; align-items: center; gap: 10px; padding: 9px 10px; border-radius: 10px; border: 1.5px solid var(--color-border-tertiary); margin-bottom: 7px; cursor: pointer; transition: border-color 0.15s, background 0.15s; }
+.eval-opt:last-child { margin-bottom: 0; }
+.eval-opt span { font-size: 18px; flex-shrink: 0; }
+.eval-opt p { font-size: 11px; color: var(--color-text-primary); line-height: 1.4; flex: 1; }
+.eval-opt::after { content: ''; width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--color-border-secondary); flex-shrink: 0; transition: border-color 0.15s, background 0.15s, box-shadow 0.15s; display: block; }
+.eval-opt.sel { border-color: #E30613; background: rgba(227,6,19,0.07); }
+.eval-opt.sel p { color: #E30613; font-weight: 500; }
+.eval-opt.sel::after { border-color: #E30613; background: #E30613; box-shadow: inset 0 0 0 3px var(--color-background-primary); }
+
+</style>
+
+<h2 class="sr-only">Prototipo interactivo de Mi Bienestar — App INACAP</h2>
+<div class="theme-toggle-wrap" id="themeToggleWrap">
+  <button class="theme-btn" id="themeBtn" onclick="toggleTheme()" style="background:#f0f0f0;border-color:#ccc;color:#1a1a1a">
+    <span class="t-icon">🌙</span><span id="themeBtnLabel">Modo oscuro</span>
+  </button>
+</div>
+<div class="phone-wrap light" id="phoneWrap">
+<div class="phone">
+<div class="screen" id="appScreen">
+
+  <div class="toast" id="toast"></div>
+
+  <!-- LANDING — Accesos Directos (replica de la app real) -->
+  <div class="view active" id="view-landing">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header">
+      <i class="ti ti-settings" style="color:#fff;font-size:17px" aria-hidden="true"></i>
+      <span class="header-title">APP INACAP</span>
+      <i class="ti ti-bell" style="color:#fff;font-size:17px" aria-hidden="true"></i>
+    </div>
+    <div class="scroll-content" style="padding:0">
+      <div class="landing-section-header">
+        <span class="landing-section-label">Accesos Directos</span>
+        <i class="ti ti-arrows-sort landing-sort-icon" aria-hidden="true"></i>
+      </div>
+      <div class="access-grid">
+        <!-- Fila 1 -->
+        <div class="ac ac-peach">
+          <div class="ac-icon-wrap"><i class="ti ti-cast" aria-hidden="true"></i></div>
+          <span class="ac-title">Ambiente de Aprendizaje</span>
+          <i class="ti ti-external-link ac-arrow" style="color:#E30613" aria-hidden="true"></i>
+        </div>
+        <div class="ac ac-amber2">
+          <div class="ac-icon-wrap"><i class="ti ti-mail" aria-hidden="true"></i></div>
+          <span class="ac-title">INACAPMail</span>
+          <span class="ac-badge">99+</span>
+        </div>
+        <!-- Fila 2 -->
+        <div class="ac ac-yellow">
+          <div class="ac-icon-wrap"><i class="ti ti-calendar" aria-hidden="true"></i></div>
+          <span class="ac-title">Horario</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#e8d84a" aria-hidden="true"></i>
+        </div>
+        <div class="ac ac-green2">
+          <div class="ac-icon-wrap"><i class="ti ti-qrcode" aria-hidden="true"></i></div>
+          <span class="ac-title">Credencial Virtual</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#a8d96b" aria-hidden="true"></i>
+        </div>
+        <!-- Fila 3 -->
+        <div class="ac ac-lavender">
+          <div class="ac-icon-wrap"><i class="ti ti-file-text" aria-hidden="true"></i></div>
+          <span class="ac-title">Certificados</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#9b96e8" aria-hidden="true"></i>
+        </div>
+        <div class="ac ac-rose">
+          <div class="ac-icon-wrap"><i class="ti ti-layout-grid" aria-hidden="true"></i></div>
+          <span class="ac-title">Malla Curricular</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#e87aab" aria-hidden="true"></i>
+        </div>
+        <!-- Fila 4 -->
+        <div class="ac ac-orange2">
+          <div class="ac-icon-wrap"><i class="ti ti-trending-up" aria-hidden="true"></i></div>
+          <span class="ac-title">Mi Progresión</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#f5a06a" aria-hidden="true"></i>
+        </div>
+        <div class="ac ac-rose" style="background:#3a2218">
+          <div class="ac-icon-wrap" style="background:#e89060;color:#5a1a00"><i class="ti ti-briefcase" aria-hidden="true"></i></div>
+          <span class="ac-title">Práctica Profesional</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#e89060" aria-hidden="true"></i>
+        </div>
+        <!-- Fila 5 -->
+        <div class="ac ac-cream">
+          <div class="ac-icon-wrap"><i class="ti ti-first-aid-kit" aria-hidden="true"></i></div>
+          <span class="ac-title">Seguro de Accidentes</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#f0c84a" aria-hidden="true"></i>
+        </div>
+        <div class="ac ac-sage">
+          <div class="ac-icon-wrap"><i class="ti ti-clipboard-check" aria-hidden="true"></i></div>
+          <span class="ac-title">Solicitudes</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#7ac46a" aria-hidden="true"></i>
+        </div>
+        <!-- Fila 6 -->
+        <div class="ac ac-sky">
+          <div class="ac-icon-wrap"><i class="ti ti-brand-teams" aria-hidden="true"></i></div>
+          <span class="ac-title">Acceso Teams</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#7ab8e8" aria-hidden="true"></i>
+        </div>
+        <div class="ac ac-lilac">
+          <div class="ac-icon-wrap"><i class="ti ti-building" aria-hidden="true"></i></div>
+          <span class="ac-title">Mi Sede</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#a882e8" aria-hidden="true"></i>
+        </div>
+        <!-- Fila 7 -->
+        <div class="ac ac-pink2">
+          <div class="ac-icon-wrap"><i class="ti ti-brand-onedrive" aria-hidden="true"></i></div>
+          <span class="ac-title">OneDrive</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#e880c0" aria-hidden="true"></i>
+        </div>
+        <div class="ac ac-orange2" style="background:#3a2414">
+          <div class="ac-icon-wrap"><i class="ti ti-calendar-event" aria-hidden="true"></i></div>
+          <span class="ac-title">Reserva de Espacios</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#f5a06a" aria-hidden="true"></i>
+        </div>
+        <!-- Fila 8 -->
+        <div class="ac ac-red2">
+          <div class="ac-icon-wrap"><i class="ti ti-credit-card" aria-hidden="true"></i></div>
+          <span class="ac-title">Portal de Pagos</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#e87070" aria-hidden="true"></i>
+        </div>
+        <div class="ac ac-cream">
+          <div class="ac-icon-wrap"><i class="ti ti-receipt" aria-hidden="true"></i></div>
+          <span class="ac-title">Visualización de Pagos</span>
+          <i class="ti ti-arrow-right ac-arrow" style="color:#f0c84a" aria-hidden="true"></i>
+        </div>
+        <!-- ★ MI BIENESTAR — bloque interactivo -->
+        <div class="ac ac-bienestar interactive" onclick="goTo('home')" style="grid-column: span 2;" role="button" aria-label="Ir a Mi Bienestar">
+          <div style="display:flex;align-items:center;gap:10px">
+            <div class="ac-icon-wrap"><i class="ti ti-heart" aria-hidden="true"></i></div>
+            <div>
+              <span class="ac-title">Mi Bienestar</span>
+              <p class="ac-desc">Panel informativo · Salud mental, física y más</p>
+            </div>
+          </div>
+          <i class="ti ti-arrow-right ac-arrow" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="btn-cerrar">Cerrar Sesión</div>
+      <div class="landing-footer"><p>Versión — 8.4.0</p></div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item active"><i class="ti ti-home" aria-hidden="true"></i><span>Inicio</span></button>
+      <button class="nav-item"><i class="ti ti-book" aria-hidden="true"></i><span>Cursos</span></button>
+      <button class="nav-item"><i class="ti ti-route" aria-hidden="true"></i><span>Mi Trayectoria</span></button>
+      <button class="nav-item"><i class="ti ti-apps" aria-hidden="true"></i><span>Servicios</span></button>
+      <button class="nav-item"><i class="ti ti-user" aria-hidden="true"></i><span>Perfil</span></button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- HOME -->
+  <div class="view" id="view-home">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header">
+      <button class="header-back" onclick="goTo('landing')" aria-label="Volver a App INACAP"><i class="ti ti-arrow-left"></i></button>
+      <span class="header-title">MI BIENESTAR</span>
+      <i class="ti ti-bell" style="color:#fff;font-size:17px" aria-hidden="true"></i>
+    </div>
+    <div class="scroll-content">
+      <div class="welcome">
+        <p>Bienvenido/a de vuelta</p>
+        <h2>¿Cómo estás hoy? 👋</h2>
+      </div>
+      <p class="section-label">Bienestar</p>
+      <div class="grid">
+        <button class="card c-pink" onclick="goTo('mental')"><i class="ti ti-brain" aria-hidden="true"></i><span class="card-title">Salud Mental</span><span class="card-desc">Apoyo y recursos emocionales</span></button>
+        <button class="card c-green" onclick="goTo('fisica')"><i class="ti ti-run" aria-hidden="true"></i><span class="card-title">Actividad Física</span><span class="card-desc">Rutinas y sala de ejercicios</span></button>
+        <button class="card c-teal" onclick="goTo('alimento')"><i class="ti ti-apple" aria-hidden="true"></i><span class="card-title">Alimentación</span><span class="card-desc">Casino, horarios y nutrición</span></button>
+        <button class="card c-purple" onclick="goTo('recursos')"><i class="ti ti-book-2" aria-hidden="true"></i><span class="card-title">Recursos de Estudio</span><span class="card-desc">Técnicas y concentración</span></button>
+      </div>
+      <p class="section-label">Apoyo y Recursos</p>
+      <div class="grid">
+        <button class="card c-amber" onclick="goTo('beneficios')"><i class="ti ti-coin" aria-hidden="true"></i><span class="card-title">Beneficios</span><span class="card-desc">Becas, TNE y más</span></button>
+        <button class="card c-purple" onclick="goTo('pares')"><i class="ti ti-users" aria-hidden="true"></i><span class="card-title">Red de Pares</span><span class="card-desc">Apoyo entre estudiantes</span></button>
+        <button class="card c-blue card-wide" onclick="goTo('contacto')"><i class="ti ti-phone-call" aria-hidden="true"></i><div class="card-text"><p class="card-title">Contacto Profesional<span class="alert-dot"></span></p><p class="card-desc">Psicólogo, orientador o médico disponible</p></div></button>
+      </div>
+      <p class="section-label">Tu progreso</p>
+      <div class="grid">
+        <button class="card c-teal" onclick="goTo('historial')"><i class="ti ti-chart-line" aria-hidden="true"></i><span class="card-title">Mi Historial</span><span class="card-desc">Seguimiento semanal</span></button>
+        <button class="card c-amber" onclick="goTo('notificaciones')"><i class="ti ti-bell" aria-hidden="true"></i><span class="card-title">Notificaciones<span class="alert-dot" style="margin-left:4px"></span></span><span class="card-desc">Pausas, citas y avisos</span></button>
+      </div>
+    </div>
+    <div class="bottom-nav">
+      <button class="nav-item active" onclick="goTo('home')"><i class="ti ti-home" aria-hidden="true"></i><span>Inicio</span></button>
+      <button class="nav-item" onclick="showToast('Cursos próximamente')"><i class="ti ti-book" aria-hidden="true"></i><span>Cursos</span></button>
+      <button class="nav-item" onclick="showToast('Mi Trayectoria próximamente')"><i class="ti ti-route" aria-hidden="true"></i><span>Trayectoria</span></button>
+      <button class="nav-item" onclick="showToast('Servicios próximamente')"><i class="ti ti-apps" aria-hidden="true"></i><span>Servicios</span></button>
+      <button class="nav-item" onclick="goTo('perfil')"><i class="ti ti-user" aria-hidden="true"></i><span>Perfil</span></button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- SALUD MENTAL -->
+  <div class="view" id="view-mental">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Salud Mental</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-pink"><i class="ti ti-brain" aria-hidden="true"></i><div><h2>Salud Mental</h2><p>Recursos para tu bienestar emocional</p></div></div>
+      <div class="info-card"><h3>¿Qué es el estrés académico?</h3><p>Es una respuesta normal ante exigencias de la vida universitaria. Identificarlo a tiempo permite manejarlo mejor.</p><span class="tag" style="background:#34202a;color:#f3a8c4">Informativo</span></div>
+      <div class="info-card"><h3>Señales de alerta</h3><p>Dificultad para dormir, irritabilidad, baja concentración, aislamiento social o sensación de agotamiento constante.</p></div>
+      <div class="info-card"><h3>Técnica: Respiración 4-7-8</h3><p>Inhala 4 seg → mantén 7 seg → exhala 8 seg. Repite 3 veces. Reduce ansiedad en minutos.</p><span class="tag" style="background:#1f2f16;color:#a9d96b">Ejercicio</span></div>
+      <button class="action-btn btn-red" onclick="goTo('chatpsi')"><i class="ti ti-message-circle"></i>Chat con psicóloga</button>
+      <button class="action-btn btn-outline" onclick="goTo('autoeval')"><i class="ti ti-checklist"></i>Hacer autoevaluación</button>
+      <button class="action-btn btn-outline" onclick="goTo('contacto')"><i class="ti ti-phone-call"></i>Contacto profesional</button>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- ACTIVIDAD FÍSICA -->
+  <div class="view" id="view-fisica">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Actividad Física</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-green"><i class="ti ti-run" aria-hidden="true"></i><div><h2>Actividad Física</h2><p>Muévete aunque sea 10 minutos</p></div></div>
+      <div class="info-card"><h3>Sala de Ejercicios — Sede</h3><p>Disponible de lunes a viernes de 8:00 a 20:00 hrs. Acceso libre con credencial estudiantil.</p><span class="tag" style="background:#133029;color:#6acab0">Disponible hoy</span></div>
+      <p class="section-label">Rutinas en video</p>
+      <div class="video-card" onclick="showToast('▶ Reproduciendo: Express 10 min')">
+        <div class="video-thumb"><i class="ti ti-player-play" aria-hidden="true"></i></div>
+        <div style="flex:1">
+          <p class="v-title">Rutina Express — 10 min</p>
+          <p class="v-meta">Sin equipamiento · Nivel básico</p>
+          <p class="v-meta" style="margin-top:3px">Sentadillas · Flexiones · Plancha · Saltos</p>
+        </div>
+        <i class="ti ti-chevron-right" style="color:var(--color-text-secondary);font-size:14px" aria-hidden="true"></i>
+      </div>
+      <div class="video-card" onclick="showToast('▶ Reproduciendo: Estiramiento 5 min')">
+        <div class="video-thumb" style="background:#133029;color:#6acab0"><i class="ti ti-player-play" aria-hidden="true"></i></div>
+        <div style="flex:1">
+          <p class="v-title">Estiramiento — 5 min</p>
+          <p class="v-meta">Después de clases · Relajación</p>
+          <p class="v-meta" style="margin-top:3px">Cuello · Hombros · Espalda · Piernas</p>
+        </div>
+        <i class="ti ti-chevron-right" style="color:var(--color-text-secondary);font-size:14px" aria-hidden="true"></i>
+      </div>
+      <div class="video-card" onclick="showToast('▶ Reproduciendo: Cardio ligero')">
+        <div class="video-thumb" style="background:#3a2c12;color:#f0c84a"><i class="ti ti-player-play" aria-hidden="true"></i></div>
+        <div style="flex:1">
+          <p class="v-title">Cardio Ligero — 15 min</p>
+          <p class="v-meta">En patio · Nivel intermedio</p>
+          <p class="v-meta" style="margin-top:3px">Trote suave · Steps · Saltos coordinados</p>
+        </div>
+        <i class="ti ti-chevron-right" style="color:var(--color-text-secondary);font-size:14px" aria-hidden="true"></i>
+      </div>
+      <button class="action-btn btn-red" onclick="goTo('pausas')"><i class="ti ti-calendar-event"></i>Unirme a una pausa activa grupal</button>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- ALIMENTACIÓN -->
+  <div class="view" id="view-alimento">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Alimentación</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-teal"><i class="ti ti-apple" aria-hidden="true"></i><div><h2>Alimentación</h2><p>Come bien, rinde mejor</p></div></div>
+      <div class="info-card"><h3>Casino INACAP — Menú de hoy</h3><p>Almuerzo: Pollo al jugo + ensalada + bebida. Colación: Sándwich integral disponible desde las 10:00.</p><span class="tag" style="background:#133029;color:#6acab0">Actualizado hoy</span></div>
+      <div class="info-card"><h3>Horarios del casino</h3><p>Desayuno: 7:30 – 9:00 hrs<br>Almuerzo: 12:00 – 14:30 hrs<br>Colaciones: 10:00 – 17:00 hrs</p></div>
+      <div class="info-card"><h3>Tip nutricional</h3><p>Beber al menos 2 litros de agua al día mejora la concentración y reduce el cansancio mental.</p><span class="tag" style="background:#3a2c12;color:#f0c84a">Consejo</span></div>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- PAUSAS ACTIVAS -->
+  <div class="view" id="view-pausas">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Pausas Activas</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-blue"><i class="ti ti-calendar-event" aria-hidden="true"></i><div><h2>Pausas Activas</h2><p>Desafíos y actividades grupales</p></div></div>
+      <div class="info-card"><h3>Pausa activa grupal — Hoy 13:00</h3><p>Patio central, 15 minutos de movimiento guiado. Sin inscripción previa. Todos son bienvenidos.</p><span class="tag" style="background:#16263a;color:#7ab8e8">Hoy</span></div>
+      <div class="info-card"><h3>Desafío semanal activo</h3><p>Esta semana: 3 días con al menos 10 min de actividad. ¿Puedes lograrlo?</p>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:66%"></div></div>
+        <p style="font-size:10px;color:var(--color-text-secondary);margin-top:4px">2 de 3 días completados</p>
+      </div>
+      <button class="action-btn btn-red" onclick="showToast('¡Te inscribiste en la pausa activa!')"><i class="ti ti-check"></i>Inscribirme en pausa de hoy</button>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- BENEFICIOS -->
+  <div class="view" id="view-beneficios">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Beneficios</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-amber"><i class="ti ti-coin" aria-hidden="true"></i><div><h2>Beneficios</h2><p>Todo lo que puedes aprovechar</p></div></div>
+
+      <!-- Contador de beneficios disponibles -->
+      <div style="background:#3a2c12;border-radius:12px;padding:10px 14px;margin-bottom:12px;display:flex;align-items:center;gap:10px">
+        <i class="ti ti-gift" style="font-size:22px;color:#f0c84a" aria-hidden="true"></i>
+        <div>
+          <p style="font-size:13px;font-weight:600;color:#f0c84a">3 beneficios disponibles para ti</p>
+          <p style="font-size:10px;color:#c0a030">Revisa lo que puedes solicitar este semestre</p>
+        </div>
+      </div>
+
+      <p class="section-label">Beneficios económicos</p>
+      <div class="info-card"><h3>Tarjeta Nacional Estudiantil (TNE)</h3><p>Descuentos en transporte público. Renueva antes del 30 de junio en Secretaría de Sede.</p><span class="tag" style="background:#3a2c12;color:#f0c84a">Vigente</span></div>
+      <div class="info-card"><h3>Beca de Alimentación</h3><p>Cubre el 100% del almuerzo en el casino. Postula antes del 15 de julio con certificado socioeconómico.</p><span class="tag" style="background:#133029;color:#6acab0">Disponible</span></div>
+      <div class="info-card"><h3>Beca de Apoyo Académico</h3><p>Para estudiantes con promedio sobre 5.5. Incluye acceso a materiales y tutorías gratuitas.</p><span class="tag" style="background:#133029;color:#6acab0">Disponible</span></div>
+      <button class="action-btn btn-red" onclick="showToast('Abriendo formulario de postulación...')"><i class="ti ti-file-text"></i>Postular a beneficios</button>
+
+      <p class="section-label">Postulación FUAS</p>
+      <div class="info-card">
+        <h3>FUAS — Fondo Solidario y Gratuidad</h3>
+        <p>Formulario Único de Acreditación Socioeconómica para acceder a becas y créditos del Estado. Plazo: según MINEDUC.</p>
+        <span class="tag" style="background:#16263a;color:#7ab8e8">Periodo abierto</span>
+        <button class="action-btn btn-red" style="margin-top:10px;margin-bottom:0" onclick="showToast('Abriendo portal FUAS...')"><i class="ti ti-external-link"></i>Ir a portal FUAS</button>
+      </div>
+      <div class="info-card">
+        <h3>Beca Bicentenario</h3>
+        <p>Cubre arancel total para alumnos con puntaje PSU/PDT destacado y contexto socioeconómico. Se renueva vía FUAS anualmente.</p>
+      </div>
+
+      <p class="section-label">Servicios de la sede</p>
+      <div class="info-card">
+        <div class="check-row" onclick="showToast('Abriendo Biblioteca Digital...')">
+          <i class="ti ti-books" style="color:#7ab8e8;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1">
+            <p style="font-weight:500">Biblioteca INACAP Antofagasta</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Catálogo, préstamos y recursos digitales</p>
+          </div>
+          <i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i>
+        </div>
+        <div class="check-row" onclick="showToast('Abriendo Biblioteca Digital INACAP...')">
+          <i class="ti ti-device-laptop" style="color:#a89be8;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1">
+            <p style="font-weight:500">Biblioteca Digital</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">E-books, artículos y bases de datos</p>
+          </div>
+          <i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i>
+        </div>
+        <div class="check-row" onclick="showToast('Abriendo beneficios estudiantiles...')">
+          <i class="ti ti-school" style="color:#f0c84a;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1">
+            <p style="font-weight:500">Beneficios Escolares INACAP</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Descuentos, convenios y servicios sede</p>
+          </div>
+          <i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i>
+        </div>
+      </div>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- RED DE PARES -->
+  <div class="view" id="view-pares">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Red de Pares</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-purple"><i class="ti ti-users" aria-hidden="true"></i><div><h2>Red de Pares</h2><p>Apoyo entre estudiantes</p></div></div>
+      <div class="info-card"><h3>¿Qué es la Red de Pares?</h3><p>Estudiantes entrenados para acompañar a sus compañeros en momentos difíciles. No son psicólogos, pero sí un primer punto de escucha.</p></div>
+
+      <p class="section-label">Pares disponibles ahora</p>
+      <div class="info-card">
+        <div class="check-row" onclick="showToast('Conectando con Valentina...')">
+          <div style="width:34px;height:34px;border-radius:50%;background:#221f3a;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#a89be8;flex-shrink:0">V</div>
+          <div style="flex:1">
+            <p style="font-weight:500">Valentina M.</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:1px">Ing. Informática · 3er año</p>
+          </div>
+          <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#6acab0;font-weight:500"><span style="width:7px;height:7px;border-radius:50%;background:#6acab0;display:inline-block"></span>En línea</span>
+        </div>
+        <div class="check-row" onclick="showToast('Conectando con Diego...')">
+          <div style="width:34px;height:34px;border-radius:50%;background:#16263a;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#7ab8e8;flex-shrink:0">D</div>
+          <div style="flex:1">
+            <p style="font-weight:500">Diego R.</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:1px">Construcción Civil · 2do año</p>
+          </div>
+          <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#6acab0;font-weight:500"><span style="width:7px;height:7px;border-radius:50%;background:#6acab0;display:inline-block"></span>En línea</span>
+        </div>
+        <div class="check-row" onclick="showToast('Camila no disponible ahora')">
+          <div style="width:34px;height:34px;border-radius:50%;background:#3a2c12;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#f0c84a;flex-shrink:0">C</div>
+          <div style="flex:1">
+            <p style="font-weight:500">Camila S.</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:1px">Administración · 4to año</p>
+          </div>
+          <span style="display:inline-flex;align-items:center;gap:4px;font-size:10px;color:#9a9a9e;font-weight:500"><span style="width:7px;height:7px;border-radius:50%;background:#4a4a4d;display:inline-block"></span>Ocupada</span>
+        </div>
+      </div>
+
+      <div class="info-card"><h3>Grupo de estudio compartido</h3><p>Sesiones grupales los martes y jueves de 16:00 a 18:00 en sala B-204.</p><span class="tag" style="background:#221f3a;color:#a89be8">Abierto</span></div>
+      <div class="info-card"><h3>Chat de apoyo anónimo</h3><p>Cuéntale a un par cómo te sientes. 100% confidencial dentro de la red estudiantil.</p></div>
+      <button class="action-btn btn-red" onclick="showToast('Conectando con un par disponible...')"><i class="ti ti-message-circle"></i>Hablar con un par ahora</button>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- CONTACTO PROFESIONAL -->
+  <div class="view" id="view-contacto">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Contacto Profesional</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-blue"><i class="ti ti-phone-call" aria-hidden="true"></i><div><h2>Apoyo Profesional</h2><p>Disponible para ti hoy</p></div></div>
+      <div class="info-card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <div style="width:36px;height:36px;border-radius:50%;background:#16263a;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#7ab8e8">PS</div>
+          <div><p style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Psicóloga INACAP</p><p style="font-size:11px;color:var(--color-text-secondary)">Lun–Vie 9:00–17:00</p></div>
+          <span class="tag" style="background:#1f2f16;color:#a9d96b;margin-left:auto">Disponible</span>
+        </div>
+        <button class="action-btn btn-red" style="margin-top:4px" onclick="showToast('Solicitando hora con psicóloga...')"><i class="ti ti-calendar-plus"></i>Solicitar hora</button>
+      </div>
+      <div class="info-card">
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
+          <div style="width:36px;height:36px;border-radius:50%;background:#3a2c12;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:500;color:#f0c84a">OR</div>
+          <div><p style="font-size:13px;font-weight:500;color:var(--color-text-primary)">Orientador Académico</p><p style="font-size:11px;color:var(--color-text-secondary)">Mar y Jue 10:00–14:00</p></div>
+          <span class="tag" style="background:#1f2f16;color:#a9d96b;margin-left:auto">Disponible</span>
+        </div>
+        <button class="action-btn btn-outline" onclick="showToast('Enviando solicitud al orientador...')"><i class="ti ti-mail"></i>Enviar mensaje</button>
+      </div>
+      <div class="info-card"><h3>Línea de crisis</h3><p>Si estás en un momento muy difícil, puedes llamar al Fono Salud Mental: <strong>600 360 7777</strong> (gratuito, 24/7).</p><span class="tag" style="background:#3a1414;color:#ff8080">Urgente</span></div>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- HISTORIAL -->
+  <div class="view" id="view-historial">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Mi Historial</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-teal"><i class="ti ti-chart-line" aria-hidden="true"></i><div><h2>Mi Historial</h2><p>Tu bienestar en el tiempo</p></div></div>
+      <div class="info-card">
+        <h3>Esta semana</h3>
+        <p style="margin:6px 0 2px;font-size:11px;color:var(--color-text-secondary)">Bienestar emocional</p>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:70%"></div></div>
+        <p style="margin:8px 0 2px;font-size:11px;color:var(--color-text-secondary)">Actividad física</p>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:50%;background:#2f7dc4"></div></div>
+        <p style="margin:8px 0 2px;font-size:11px;color:var(--color-text-secondary)">Horas de sueño promedio</p>
+        <div class="prog-bar-wrap"><div class="prog-bar" style="width:60%;background:#4f9a1f"></div></div>
+      </div>
+      <p class="section-label" style="margin-top:4px">Logros</p>
+      <div class="badge-grid">
+        <div class="badge"><i class="ti ti-run" style="color:#a9d96b" aria-hidden="true"></i><span>3 días activo</span></div>
+        <div class="badge"><i class="ti ti-brain" style="color:#f3a8c4" aria-hidden="true"></i><span>Autoevaluación</span></div>
+        <div class="badge" style="opacity:0.4"><i class="ti ti-moon" style="color:#a89be8" aria-hidden="true"></i><span>7h de sueño</span></div>
+      </div>
+      <button class="btn-back" onclick="goTo('home')" style="margin-top:12px"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- AUTOEVALUACIÓN -->
+  <div class="view" id="view-autoeval">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('mental')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Autoevaluación</span><span style="width:28px"></span></div>
+
+    <!-- FORMULARIO -->
+    <div class="scroll-content" id="eval-form">
+      <div class="detail-hero c-pink"><i class="ti ti-checklist" aria-hidden="true"></i><div><h2>¿Cómo estás hoy?</h2><p>5 preguntas · ~2 minutos</p></div></div>
+
+      <!-- Barra de progreso -->
+      <div style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:4px">
+          <span id="eval-prog-label" style="font-size:10px;color:var(--color-text-secondary)">Pregunta 1 de 5</span>
+          <span id="eval-prog-pct" style="font-size:10px;color:#E30613;font-weight:600">0%</span>
+        </div>
+        <div class="prog-bar-wrap"><div class="prog-bar" id="eval-prog-bar" style="width:0%"></div></div>
+      </div>
+
+      <!-- P1: Estado emocional -->
+      <div class="info-card" id="eval-q1">
+        <h3 style="margin-bottom:8px">1. ¿Cómo te sientes emocionalmente hoy?</h3>
+        <div class="emoji-row">
+          <button class="emoji-btn" onclick="pickEmoji(this,'q1',1)" aria-label="Muy mal">😔</button>
+          <button class="emoji-btn" onclick="pickEmoji(this,'q1',2)" aria-label="Mal">😟</button>
+          <button class="emoji-btn" onclick="pickEmoji(this,'q1',3)" aria-label="Regular">😐</button>
+          <button class="emoji-btn" onclick="pickEmoji(this,'q1',4)" aria-label="Bien">🙂</button>
+          <button class="emoji-btn" onclick="pickEmoji(this,'q1',5)" aria-label="Muy bien">😄</button>
+        </div>
+        <p id="q1-lbl" style="text-align:center;font-size:11px;color:#E30613;font-weight:500;min-height:16px;margin-top:4px"></p>
+      </div>
+
+      <!-- P2: Sueño -->
+      <div class="info-card" id="eval-q2">
+        <h3 style="margin-bottom:8px">2. ¿Cómo ha sido tu sueño esta semana?</h3>
+        <div class="emoji-row">
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q2',1,'Muy mal 😴')" aria-label="Muy mal">😴</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q2',2,'Mal 🛌')" aria-label="Mal">🛌</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q2',3,'Regular 😌')" aria-label="Regular">😌</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q2',4,'Bien ✨')" aria-label="Bien">✨</button>
+        </div>
+        <p id="q2-lbl" style="text-align:center;font-size:11px;color:#E30613;font-weight:500;min-height:16px;margin-top:4px"></p>
+      </div>
+
+      <!-- P3: Estrés académico -->
+      <div class="info-card" id="eval-q3">
+        <h3 style="margin-bottom:8px">3. ¿Cómo está tu estrés académico?</h3>
+        <div class="emoji-row">
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q3',1,'Muy alto 🔥')" aria-label="Muy alto">🔥</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q3',2,'Alto 😰')" aria-label="Alto">😰</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q3',3,'Moderado 😤')" aria-label="Moderado">😤</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q3',4,'Bajo 🙂')" aria-label="Bajo">🙂</button>
+        </div>
+        <p id="q3-lbl" style="text-align:center;font-size:11px;color:#E30613;font-weight:500;min-height:16px;margin-top:4px"></p>
+      </div>
+
+      <!-- P4: Relaciones sociales -->
+      <div class="info-card" id="eval-q4">
+        <h3 style="margin-bottom:8px">4. ¿Cómo te has sentido con tu entorno social?</h3>
+        <div class="emoji-row">
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q4',1,'Aislado/a 🚪')" aria-label="Aislado">🚪</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q4',2,'Me cuesta 🤐')" aria-label="Me cuesta">🤐</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q4',3,'Bien 🤝')" aria-label="Bien">🤝</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q4',4,'Muy bien 💛')" aria-label="Muy bien">💛</button>
+        </div>
+        <p id="q4-lbl" style="text-align:center;font-size:11px;color:#E30613;font-weight:500;min-height:16px;margin-top:4px"></p>
+      </div>
+
+      <!-- P5: Motivación -->
+      <div class="info-card" id="eval-q5">
+        <h3 style="margin-bottom:8px">5. ¿Cómo está tu motivación para seguir adelante?</h3>
+        <div class="emoji-row">
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q5',1,'Muy baja ❌')" aria-label="Muy baja">❌</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q5',2,'Baja 📉')" aria-label="Baja">📉</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q5',3,'Normal 📈')" aria-label="Normal">📈</button>
+          <button class="emoji-btn" onclick="pickEmojiQ(this,'q5',4,'Alta 🚀')" aria-label="Alta">🚀</button>
+        </div>
+        <p id="q5-lbl" style="text-align:center;font-size:11px;color:#E30613;font-weight:500;min-height:16px;margin-top:4px"></p>
+      </div>
+
+      <button class="action-btn btn-red" id="eval-submit-btn" onclick="submitEvalFull()" style="opacity:0.4;pointer-events:none"><i class="ti ti-send"></i>Ver mi resultado</button>
+      <button class="btn-back" onclick="goTo('mental')"><i class="ti ti-arrow-left"></i>Volver a Salud Mental</button>
+    </div>
+
+    <!-- RESULTADO -->
+    <div class="scroll-content" id="eval-result" style="display:none">
+      <div class="detail-hero" id="res-hero"><i id="res-icon" class="ti ti-heart" aria-hidden="true"></i><div><h2 id="res-title"></h2><p id="res-subtitle"></p></div></div>
+      <div class="info-card">
+        <h3 id="res-heading"></h3>
+        <p id="res-body" style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-top:6px"></p>
+      </div>
+      <div class="info-card">
+        <h3>💡 Te recomendamos</h3>
+        <p id="res-tip" style="font-size:12px;color:var(--color-text-secondary);line-height:1.6;margin-top:6px"></p>
+      </div>
+      <button class="action-btn btn-red" onclick="goTo('contacto')" style="margin-top:4px"><i class="ti ti-phone-call"></i>Hablar con psicóloga</button>
+      <button class="btn-back" onclick="resetEvalFull()"><i class="ti ti-refresh"></i>Volver a evaluar</button>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- PERFIL -->
+  <div class="view" id="view-perfil">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Mi Perfil</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div style="text-align:center;padding:20px 0 16px">
+        <div style="width:64px;height:64px;border-radius:50%;background:#E30613;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:500;color:#fff;margin:0 auto 10px">E</div>
+        <p style="font-size:16px;font-weight:500;color:var(--color-text-primary)">Estudiante INACAP</p>
+        <p style="font-size:12px;color:var(--color-text-secondary)">Ingeniería en Informática · Sede Antofagasta</p>
+      </div>
+      <div class="info-card">
+        <div class="check-row" onclick="showToast('Abriendo notificaciones...')"><i class="ti ti-bell" style="color:#E30613" aria-hidden="true"></i><p>Notificaciones de bienestar</p><i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i></div>
+        <div class="check-row" onclick="showToast('Abriendo privacidad...')"><i class="ti ti-lock" style="color:#E30613" aria-hidden="true"></i><p>Privacidad y datos</p><i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i></div>
+        <div class="check-row" onclick="showToast('Cerrando sesión...')"><i class="ti ti-logout" style="color:#E30613" aria-hidden="true"></i><p>Cerrar sesión</p><i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i></div>
+      </div>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- NOTIFICACIONES -->
+  <div class="view" id="view-notificaciones">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Notificaciones</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-amber"><i class="ti ti-bell" aria-hidden="true"></i><div><h2>Notificaciones</h2><p>Avisos de pausas, citas y más</p></div></div>
+
+      <p class="section-label">Hoy</p>
+      <div class="info-card">
+        <div class="check-row" style="cursor:default">
+          <i class="ti ti-calendar-event" style="color:#7ab8e8;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1">
+            <p style="font-weight:500">Pausa activa — 13:00 hrs</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Patio central · 15 min de movimiento guiado</p>
+          </div>
+          <span style="font-size:9px;color:var(--color-text-secondary)">Hoy</span>
+        </div>
+        <div class="check-row" style="cursor:default">
+          <i class="ti ti-heart" style="color:#E30613;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1">
+            <p style="font-weight:500">Autoevaluación pendiente</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">¿Cómo estás esta semana? Solo 1 minuto</p>
+          </div>
+          <span style="font-size:9px;color:var(--color-text-secondary)">Hoy</span>
+        </div>
+      </div>
+
+      <p class="section-label">Esta semana</p>
+      <div class="info-card">
+        <div class="check-row" style="cursor:default">
+          <i class="ti ti-calendar-plus" style="color:#a9d96b;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1">
+            <p style="font-weight:500">Hora con psicóloga confirmada</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Miércoles 25 jun · 10:30 hrs · Oficina A-102</p>
+          </div>
+          <span style="font-size:9px;color:#6acab0;font-weight:500">✓ Conf.</span>
+        </div>
+        <div class="check-row" style="cursor:default">
+          <i class="ti ti-coin" style="color:#f0c84a;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1">
+            <p style="font-weight:500">Plazo beca alimentación</p>
+            <p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Vence el 15 de julio — Revisa en Beneficios</p>
+          </div>
+          <span style="font-size:9px;color:#f0c84a;font-weight:500">7 días</span>
+        </div>
+      </div>
+
+      <div class="info-card">
+        <h3>Configurar notificaciones</h3>
+        <div class="toggle-row">
+          <div><p>Pausas activas</p><span class="toggle-desc">Recordatorio 15 min antes</span></div>
+          <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <div><p>Citas agendadas</p><span class="toggle-desc">Confirmación y recordatorio</span></div>
+          <div class="switch on" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+        </div>
+        <div class="toggle-row">
+          <div><p>Vencimiento de becas</p><span class="toggle-desc">Aviso con 7 días de anticipación</span></div>
+          <div class="switch" onclick="toggleSwitch(this)"><div class="knob"></div></div>
+        </div>
+      </div>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- RECURSOS DE ESTUDIO -->
+  <div class="view" id="view-recursos">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header"><button class="header-back" onclick="goTo('home')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button><span class="header-title">Recursos de Estudio</span><span style="width:28px"></span></div>
+    <div class="scroll-content">
+      <div class="detail-hero c-purple"><i class="ti ti-book-2" aria-hidden="true"></i><div><h2>Recursos de Estudio</h2><p>Técnicas y herramientas para rendir mejor</p></div></div>
+
+      <p class="section-label">Técnicas de concentración</p>
+      <div class="info-card">
+        <h3>⏱ Técnica Pomodoro</h3>
+        <p>25 min de enfoque total → 5 min de descanso. Después de 4 ciclos, descansa 20 min. Ideal para sesiones largas de estudio.</p>
+        <span class="tag" style="background:#221f3a;color:#a89be8">Productividad</span>
+      </div>
+      <div class="info-card">
+        <h3>🧠 Método Cornell</h3>
+        <p>Divide tu hoja en zona de apuntes, zona de preguntas clave y resumen al final. Facilita el repaso y la retención.</p>
+        <span class="tag" style="background:#221f3a;color:#a89be8">Toma de apuntes</span>
+      </div>
+      <div class="info-card">
+        <h3>🔁 Repetición espaciada</h3>
+        <p>Repasa el material a los 1, 3, 7 y 14 días de aprenderlo. Aumenta la retención hasta un 80% más que releer.</p>
+        <span class="tag" style="background:#133029;color:#6acab0">Memoria</span>
+      </div>
+
+      <p class="section-label">Recursos digitales INACAP</p>
+      <div class="info-card">
+        <div class="check-row" onclick="showToast('Abriendo Ambiente de Aprendizaje...')">
+          <i class="ti ti-cast" style="color:#7ab8e8;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1"><p style="font-weight:500">Ambiente de Aprendizaje</p><p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Guías, tareas y material de clases</p></div>
+          <i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i>
+        </div>
+        <div class="check-row" onclick="showToast('Abriendo Biblioteca Digital...')">
+          <i class="ti ti-books" style="color:#a89be8;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1"><p style="font-weight:500">Biblioteca Digital</p><p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">E-books y artículos académicos</p></div>
+          <i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i>
+        </div>
+        <div class="check-row" onclick="showToast('Abriendo OneDrive...')">
+          <i class="ti ti-brand-onedrive" style="color:#e880c0;font-size:20px" aria-hidden="true"></i>
+          <div style="flex:1"><p style="font-weight:500">OneDrive INACAP</p><p style="font-size:10px;color:var(--color-text-secondary);margin-top:2px">Tus archivos en la nube</p></div>
+          <i class="ti ti-chevron-right" style="color:var(--color-text-secondary)" aria-hidden="true"></i>
+        </div>
+      </div>
+      <button class="btn-back" onclick="goTo('home')"><i class="ti ti-arrow-left"></i>Volver al inicio</button>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+  <!-- CHAT CON PSICÓLOGA -->
+  <div class="view" id="view-chatpsi">
+    <div class="status-bar"><span>9:41</span><span>●●● 🔋</span></div>
+    <div class="header">
+      <button class="header-back" onclick="goTo('mental')" aria-label="Volver"><i class="ti ti-arrow-left"></i></button>
+      <div style="display:flex;align-items:center;gap:8px">
+        <div style="width:28px;height:28px;border-radius:50%;background:#16263a;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#7ab8e8">PS</div>
+        <div>
+          <span class="header-title" style="font-size:13px">Psicóloga INACAP</span>
+          <div style="display:flex;align-items:center;gap:4px;margin-top:1px"><span style="width:6px;height:6px;border-radius:50%;background:#6acab0;display:inline-block"></span><span style="font-size:9px;color:#6acab0">En línea</span></div>
+        </div>
+      </div>
+      <i class="ti ti-info-circle" style="color:#fff;font-size:17px" aria-hidden="true"></i>
+    </div>
+    <div class="scroll-content" id="chatScroll">
+      <div class="chat-area" id="chatArea">
+        <div class="bubble them">Hola 👋 Soy la psicóloga de bienestar. Puedo ayudarte a resolver dudas, agendar una hora o simplemente escucharte. ¿En qué puedo ayudarte hoy?</div>
+        <div class="bubble them">Recuerda que este chat es confidencial. Tómate el tiempo que necesites.</div>
+      </div>
+    </div>
+    <div style="padding:8px 12px 4px;border-top:0.5px solid var(--color-border-tertiary);background:var(--color-background-primary);flex-shrink:0">
+      <div class="chat-input-row">
+        <input class="chat-input" id="chatInputField" type="text" placeholder="Escribe tu mensaje..." onkeydown="if(event.key==='Enter')sendChat()">
+        <button class="chat-send" onclick="sendChat()"><i class="ti ti-send" aria-hidden="true"></i></button>
+      </div>
+      <div style="display:flex;gap:6px;margin-top:6px;padding-bottom:4px;overflow-x:auto">
+        <button onclick="quickMsg('Quiero agendar una hora')" style="white-space:nowrap;font-size:10px;background:#221f3a;color:#a89be8;border:none;border-radius:14px;padding:5px 10px;cursor:pointer">📅 Agendar hora</button>
+        <button onclick="quickMsg('Estoy con mucho estrés académico')" style="white-space:nowrap;font-size:10px;background:#34202a;color:#f3a8c4;border:none;border-radius:14px;padding:5px 10px;cursor:pointer">😔 Estrés académico</button>
+        <button onclick="quickMsg('¿Cuándo tienes horas disponibles?')" style="white-space:nowrap;font-size:10px;background:#16263a;color:#7ab8e8;border:none;border-radius:14px;padding:5px 10px;cursor:pointer">🕐 Ver disponibilidad</button>
+      </div>
+    </div>
+    <div class="home-bar"><div></div></div>
+  </div>
+
+</div>
+</div>
+</div>
+
+<script>
+function goTo(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const target = document.getElementById('view-' + id);
+  if (target) target.classList.add('active');
+  document.getElementById('appScreen').scrollTop = 0;
+}
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+function selectEmoji(btn) {
+  btn.closest('.emoji-row').querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+}
+function toggleCheck(row) {
+  const icon = row.querySelector('i');
+  if (icon.classList.contains('ti-square')) {
+    icon.classList.replace('ti-square', 'ti-square-check');
+    icon.style.color = '#E30613';
+  } else {
+    icon.classList.replace('ti-square-check', 'ti-square');
+    icon.style.color = '';
+  }
+}
+function submitEval() {
+  showToast('¡Respuesta guardada! Gracias 💪');
+  setTimeout(() => goTo('home'), 1800);
+}
+
+/* ── Autoevaluación extendida (5 preguntas) ── */
+var evalAnswers = { q1: null, q2: null, q3: null, q4: null, q5: null };
+var q1Labels = { 1:'Muy mal 😔', 2:'Mal 😟', 3:'Regular 😐', 4:'Bien 🙂', 5:'Muy bien 😄' };
+
+function evalUpdateProgress() {
+  var filled = Object.values(evalAnswers).filter(v => v !== null).length;
+  var pct = Math.round((filled / 5) * 100);
+  var bar = document.getElementById('eval-prog-bar');
+  var pctEl = document.getElementById('eval-prog-pct');
+  var lblEl = document.getElementById('eval-prog-label');
+  if (bar) bar.style.width = pct + '%';
+  if (pctEl) pctEl.textContent = pct + '%';
+  if (lblEl) lblEl.textContent = filled < 5 ? 'Pregunta ' + (filled + 1) + ' de 5' : '¡Listo!';
+  var btn = document.getElementById('eval-submit-btn');
+  if (btn) { btn.style.opacity = filled === 5 ? '1' : '0.4'; btn.style.pointerEvents = filled === 5 ? 'auto' : 'none'; }
+}
+
+function pickEmoji(btn, q, val) {
+  btn.closest('.emoji-row').querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  evalAnswers[q] = val;
+  var lbl = document.getElementById('q1-lbl');
+  if (lbl) lbl.textContent = q1Labels[val];
+  evalUpdateProgress();
+}
+
+function pickEmojiQ(btn, q, val, label) {
+  btn.closest('.emoji-row').querySelectorAll('.emoji-btn').forEach(b => b.classList.remove('sel'));
+  btn.classList.add('sel');
+  evalAnswers[q] = val;
+  var lbl = document.getElementById(q + '-lbl');
+  if (lbl) lbl.textContent = label;
+  evalUpdateProgress();
+}
+function pickOpt(el, q, val) {
+  el.closest('.info-card').querySelectorAll('.eval-opt').forEach(o => o.classList.remove('sel'));
+  el.classList.add('sel');
+  evalAnswers[q] = val;
+  evalUpdateProgress();
+}
+
+var resultProfiles = [
+  { min:0, max:0.25, heroClass:'c-pink', icon:'ti-heart-broken', title:'Momento difícil', subtitle:'Gracias por ser honesto/a contigo',
+    heading:'Estás pasando por un período complicado',
+    body:'Tus respuestas indican que estás cargando mucho en este momento: falta de sueño, estrés elevado y poca energía emocional. Eso es agotador, y tiene sentido sentirse así. Lo más importante ahora es no enfrentarlo solo/a.',
+    tip:'Te recomendamos hablar con la psicóloga INACAP esta semana. No tienes que estar en crisis para pedir una hora; cualquier momento es válido para buscar apoyo.' },
+  { min:0.25, max:0.5, heroClass:'c-amber', icon:'ti-mood-confuzed', title:'Señales de alerta', subtitle:'Tu bienestar necesita atención',
+    heading:'Hay cosas que te están pesando',
+    body:'Tus respuestas muestran cierto agotamiento emocional y académico. No es una crisis, pero sí una señal de que algo en tu rutina necesita ajustarse. Es normal tener semanas difíciles; lo importante es no ignorar estas señales.',
+    tip:'Intenta incorporar al menos una pausa activa esta semana y habla con alguien de confianza. Si el agotamiento persiste, considera agendar una hora con orientación o psicología.' },
+  { min:0.5, max:0.75, heroClass:'c-blue', icon:'ti-mood-smile', title:'Estable, con espacio para crecer', subtitle:'Vas bien, sigue cuidándote',
+    heading:'Tu bienestar está en equilibrio',
+    body:'En general te encuentras bien, aunque hay algunas áreas donde podrías mejorar. Tienes motivación y conexión social, lo que es una base sólida. Con pequeños hábitos puedes seguir fortaleciendo tu bienestar día a día.',
+    tip:'Refuerza tus hábitos de sueño y mantén activas tus redes de apoyo. Recuerda que la Red de Pares está disponible si algún día quieres hablar con alguien de manera informal.' },
+  { min:0.75, max:1.01, heroClass:'c-green', icon:'ti-mood-happy', title:'¡Estás muy bien!', subtitle:'Sigue así, lo estás logrando',
+    heading:'Tu bienestar está en un gran momento',
+    body:'Tus respuestas reflejan buen estado emocional, descanso adecuado, estrés manejable y vínculos sociales positivos. Eso no es casualidad: es el resultado de cuidarte. ¡Felicitaciones por ese esfuerzo!',
+    tip:'Comparte lo que estás haciendo bien con tus compañeros. Unirte a actividades grupales puede ayudarte a mantener y potenciar este bienestar.' }
+];
+
+function submitEvalFull() {
+  var s1 = (evalAnswers.q1 - 1) / 4;
+  var s2 = (evalAnswers.q2 - 1) / 3;
+  var s3 = (evalAnswers.q3 - 1) / 3;  // invertido: 1=alto estrés, 4=bajo
+  var s4 = (evalAnswers.q4 - 1) / 3;
+  var s5 = (evalAnswers.q5 - 1) / 3;
+  var score = (s1 + s2 + (1 - s3) + s4 + s5) / 5;  // estrés: menor valor = peor
+  var profile = resultProfiles.find(p => score >= p.min && score < p.max) || resultProfiles[3];
+  var hero = document.getElementById('res-hero');
+  if (hero) hero.className = 'detail-hero ' + profile.heroClass;
+  var icon = document.getElementById('res-icon');
+  if (icon) icon.className = 'ti ' + profile.icon;
+  document.getElementById('res-title').textContent    = profile.title;
+  document.getElementById('res-subtitle').textContent = profile.subtitle;
+  document.getElementById('res-heading').textContent  = profile.heading;
+  document.getElementById('res-body').textContent     = profile.body;
+  document.getElementById('res-tip').textContent      = profile.tip;
+  document.getElementById('eval-form').style.display   = 'none';
+  document.getElementById('eval-result').style.display = 'block';
+  document.getElementById('appScreen').scrollTop = 0;
+}
+
+function resetEvalFull() {
+  evalAnswers = { q1:null, q2:null, q3:null, q4:null, q5:null };
+  var q1btns = document.querySelectorAll('#eval-q1 .emoji-btn');
+  q1btns.forEach(b => b.classList.remove('sel'));
+  var lbl = document.getElementById('q1-lbl'); if (lbl) lbl.textContent = '';
+  ['q2-lbl','q3-lbl','q4-lbl','q5-lbl'].forEach(id => { var el = document.getElementById(id); if(el) el.textContent=''; });
+  document.querySelectorAll('.eval-opt').forEach(o => o.classList.remove('sel'));
+  evalUpdateProgress();
+  document.getElementById('eval-form').style.display   = 'block';
+  document.getElementById('eval-result').style.display = 'none';
+}
+function toggleSwitch(el) {
+  el.classList.toggle('on');
+  const label = el.closest('.toggle-row').querySelector('p').textContent;
+  showToast(el.classList.contains('on') ? label + ': activado' : label + ': desactivado');
+}
+const chatReplies = [
+  'Entiendo, gracias por contarme. ¿Qué tan seguido sientes eso?',
+  'Es completamente normal sentirte así en esta etapa. Cuéntame más.',
+  'Puedo agendarte una hora presencial. ¿Te acomoda esta semana?',
+  'Tienes disponible el miércoles a las 10:30 o el jueves a las 14:00. ¿Cuál prefieres?',
+  '¡Perfecto! Te queda confirmada la hora. Recibirás una notificación.',
+];
+let replyIdx = 0;
+function sendChat() {
+  const inp = document.getElementById('chatInputField');
+  const msg = inp.value.trim();
+  if (!msg) return;
+  const area = document.getElementById('chatArea');
+  const me = document.createElement('div');
+  me.className = 'bubble me'; me.textContent = msg;
+  area.appendChild(me);
+  inp.value = '';
+  setTimeout(() => {
+    const reply = document.createElement('div');
+    reply.className = 'bubble them';
+    reply.textContent = chatReplies[replyIdx % chatReplies.length];
+    replyIdx++;
+    area.appendChild(reply);
+    const sc = document.getElementById('chatScroll');
+    sc.scrollTop = sc.scrollHeight;
+  }, 900);
+  const sc = document.getElementById('chatScroll');
+  sc.scrollTop = sc.scrollHeight;
+}
+function quickMsg(msg) {
+  document.getElementById('chatInputField').value = msg;
+  sendChat();
+}
+// Fix: chat view needs flex on active
+const origGoTo = goTo;
+function toggleTheme() {
+  const wrap = document.getElementById('phoneWrap');
+  const btn  = document.getElementById('themeBtn');
+  const lbl  = document.getElementById('themeBtnLabel');
+  const icon = btn.querySelector('.t-icon');
+  const isDark = wrap.classList.toggle('light') === false;
+  if (isDark) {
+    // Ahora está en oscuro → ofrecer volver a claro
+    lbl.textContent  = '☀️ Modo claro';
+    icon.textContent = '☀️';
+    btn.style.background  = '#1c1c1e';
+    btn.style.borderColor = '#3a3a3c';
+    btn.style.color       = '#f0f0f0';
+  } else {
+    // Volvió a claro → ofrecer modo oscuro
+    lbl.textContent  = '🌙 Modo oscuro';
+    icon.textContent = '🌙';
+    btn.style.background  = '#f0f0f0';
+    btn.style.borderColor = '#ccc';
+    btn.style.color       = '#1a1a1a';
+  }
+}
+</script>
