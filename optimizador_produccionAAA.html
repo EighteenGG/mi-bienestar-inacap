@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Optimizador de Producción — RoboAntof</title>
+<style>
+  :root{
+    --bg: #0f1720;
+    --panel: #161f2b;
+    --panel-2: #1c2733;
+    --line: #2a3646;
+    --text: #e8edf3;
+    --muted: #8ea0b4;
+    --accent: #ff6a3d;
+    --accent-dim: #ff6a3d22;
+    --good: #4ade80;
+    --mono: 'JetBrains Mono', 'Courier New', monospace;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:
+      radial-gradient(circle at 15% 10%, #1a2530 0%, transparent 45%),
+      var(--bg);
+    color:var(--text);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding:32px 16px;
+  }
+  .wrap{max-width:900px;margin:0 auto;}
+
+  .chart-card{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:16px 18px 10px;
+    margin-bottom:16px;
+  }
+  .chart-card .chart-title{
+    font-size:12px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:8px;
+  }
+  .chart-legend{
+    display:flex;
+    gap:18px;
+    margin-top:6px;
+    font-size:11px;
+    color:var(--muted);
+  }
+  .chart-legend span{display:inline-flex; align-items:center; gap:6px;}
+  .chart-legend i{width:10px; height:10px; border-radius:50%; display:inline-block;}
+  #chart{width:100%; height:auto; display:block;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:8px;
+  }
+  h1{
+    font-size:26px;
+    margin:0 0 6px;
+    letter-spacing:-0.01em;
+  }
+  .sub{color:var(--muted); font-size:14px; margin-bottom:28px; line-height:1.5;}
+
+  .grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+    gap:12px;
+    margin-bottom:20px;
+  }
+  .field{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+  }
+  .field label{
+    display:block;
+    font-size:11px;
+    color:var(--muted);
+    text-transform:uppercase;
+    letter-spacing:.06em;
+    margin-bottom:6px;
+  }
+  .field input{
+    width:100%;
+    background:transparent;
+    border:none;
+    color:var(--text);
+    font-size:18px;
+    font-family:var(--mono);
+    outline:none;
+  }
+  .field .hint{font-size:11px;color:var(--muted); margin-top:4px;}
+
+  button{
+    width:100%;
+    padding:14px;
+    background:var(--accent);
+    color:#0f1720;
+    border:none;
+    border-radius:10px;
+    font-size:15px;
+    font-weight:700;
+    letter-spacing:.02em;
+    cursor:pointer;
+    transition:transform .08s ease, background .2s ease;
+  }
+  button:hover{background:#ff7c53;}
+  button:active{transform:scale(0.98);}
+
+  .result{
+    margin-top:24px;
+    display:none;
+  }
+  .result.show{display:block;}
+
+  .headline{
+    background:var(--panel-2);
+    border:1px solid var(--accent-dim);
+    border-left:4px solid var(--accent);
+    border-radius:10px;
+    padding:20px;
+    margin-bottom:16px;
+  }
+  .headline .qty{
+    font-family:var(--mono);
+    font-size:38px;
+    font-weight:700;
+    color:var(--accent);
+    line-height:1;
+  }
+  .headline .qty-label{color:var(--muted); font-size:13px; margin-top:4px;}
+
+  .metrics{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(150px,1fr));
+    gap:10px;
+    margin-bottom:16px;
+  }
+  .metric{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px;
+  }
+  .metric .val{font-family:var(--mono); font-size:19px; font-weight:600;}
+  .metric .lab{font-size:11px; color:var(--muted); text-transform:uppercase; letter-spacing:.05em; margin-top:4px;}
+
+  .check{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-size:13px;
+    color:var(--good);
+    background:#4ade8014;
+    border:1px solid #4ade8033;
+    border-radius:8px;
+    padding:10px 14px;
+    margin-bottom:16px;
+  }
+  .check.bad{color:#f87171; background:#f8717114; border-color:#f8717133;}
+
+  details{
+    background:var(--panel);
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:14px 16px;
+  }
+  summary{cursor:pointer; font-size:13px; color:var(--muted); font-weight:600;}
+  .math{
+    font-family:var(--mono);
+    font-size:13px;
+    line-height:2;
+    color:var(--text);
+    margin-top:12px;
+    white-space:pre-wrap;
+  }
+  .math .step-label{color:var(--muted);}
+
+  .err{
+    color:#f87171;
+    font-size:13px;
+    margin-top:10px;
+    display:none;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="eyebrow">RoboAntof Automatización · ABPro</div>
+  <h1>Optimizador de producción</h1>
+  <div class="sub">Ingresa los datos del modelo de precio y costo. La app calcula la cantidad óptima de unidades, el precio, y la utilidad máxima usando primera y segunda derivada.</div>
+
+  <div class="grid">
+    <div class="field">
+      <label>Precio base (a)</label>
+      <input type="number" id="a" value="300000">
+      <div class="hint">p(q) = a − b·q</div>
+    </div>
+    <div class="field">
+      <label>Pendiente del precio (b)</label>
+      <input type="number" id="b" value="500">
+      <div class="hint">Cuánto baja el precio por unidad extra</div>
+    </div>
+    <div class="field">
+      <label>Costo fijo (F)</label>
+      <input type="number" id="F" value="4000000">
+    </div>
+    <div class="field">
+      <label>Costo variable unitario (m)</label>
+      <input type="number" id="m" value="100000">
+    </div>
+    <div class="field">
+      <label>Coef. cuadrático de costo (n)</label>
+      <input type="number" id="n" value="500">
+      <div class="hint">Sobrecosto por escalar producción</div>
+    </div>
+  </div>
+
+  <button onclick="calcular()">Calcular producción óptima</button>
+  <div class="err" id="err">Revisa los valores: b + n debe ser mayor que 0.</div>
+
+  <div class="result" id="result">
+    <div class="headline">
+      <div class="qty" id="qOpt">—</div>
+      <div class="qty-label">unidades mensuales óptimas (q*)</div>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-title">Costo, ingreso y utilidad en función de q</div>
+      <canvas id="chart" width="800" height="340"></canvas>
+      <div class="chart-legend">
+        <span><i style="background:#f87171"></i> C(q) — costo</span>
+        <span><i style="background:#38bdf8"></i> I(q) — ingreso</span>
+        <span><i style="background:#ff6a3d"></i> U(q) — utilidad</span>
+        <span><i style="background:#4ade80"></i> Punto óptimo (q*, U máx)</span>
+      </div>
+    </div>
+
+    <div class="metrics">
+      <div class="metric">
+        <div class="val" id="precioOpt">—</div>
+        <div class="lab">Precio de venta</div>
+      </div>
+      <div class="metric">
+        <div class="val" id="ingresoOpt">—</div>
+        <div class="lab">Ingreso total</div>
+      </div>
+      <div class="metric">
+        <div class="val" id="costoOpt">—</div>
+        <div class="lab">Costo total</div>
+      </div>
+      <div class="metric">
+        <div class="val" id="utilidadOpt">—</div>
+        <div class="lab">Utilidad máxima</div>
+      </div>
+    </div>
+
+    <div class="check" id="checkBox">
+      <span id="checkText">—</span>
+    </div>
+
+    <details open>
+      <summary>Ver desarrollo matemático (para tu informe)</summary>
+      <div class="math" id="math"></div>
+    </details>
+  </div>
+</div>
+
+<script>
+function fmt(n){
+  return new Intl.NumberFormat('es-CL', {maximumFractionDigits:2}).format(n);
+}
+
+function calcular(){
+  const a = parseFloat(document.getElementById('a').value);
+  const b = parseFloat(document.getElementById('b').value);
+  const F = parseFloat(document.getElementById('F').value);
+  const m = parseFloat(document.getElementById('m').value);
+  const n = parseFloat(document.getElementById('n').value);
+
+  const err = document.getElementById('err');
+  const result = document.getElementById('result');
+
+  if ((b+n) <= 0 || isNaN(a)||isNaN(b)||isNaN(F)||isNaN(m)||isNaN(n)) {
+    err.style.display='block';
+    result.classList.remove('show');
+    return;
+  }
+  err.style.display='none';
+
+  // p(q) = a - bq
+  // I(q) = qp(q) = aq - bq^2
+  // C(q) = F + mq + nq^2
+  // U(q) = I - C = (a-m)q - (b+n)q^2 - F
+  // U'(q) = (a-m) - 2(b+n)q = 0  -> q* = (a-m) / (2(b+n))
+  // U''(q) = -2(b+n)
+
+  const qOpt = (a - m) / (2*(b+n));
+  const precioOpt = a - b*qOpt;
+  const ingresoOpt = qOpt * precioOpt;
+  const costoOpt = F + m*qOpt + n*qOpt*qOpt;
+  const utilidadOpt = ingresoOpt - costoOpt;
+  const segundaDerivada = -2*(b+n);
+
+  document.getElementById('qOpt').textContent = fmt(qOpt);
+  document.getElementById('precioOpt').textContent = '$' + fmt(precioOpt);
+  document.getElementById('ingresoOpt').textContent = '$' + fmt(ingresoOpt);
+  document.getElementById('costoOpt').textContent = '$' + fmt(costoOpt);
+  document.getElementById('utilidadOpt').textContent = '$' + fmt(utilidadOpt);
+
+  const checkBox = document.getElementById('checkBox');
+  const checkText = document.getElementById('checkText');
+  if (segundaDerivada < 0){
+    checkBox.classList.remove('bad');
+    checkText.textContent = 'U\'\'(q) = ' + fmt(segundaDerivada) + ' < 0  →  el punto es un MÁXIMO';
+  } else {
+    checkBox.classList.add('bad');
+    checkText.textContent = 'U\'\'(q) = ' + fmt(segundaDerivada) + ' ≥ 0  →  el punto es un MÍNIMO (revisa tus datos)';
+  }
+
+  document.getElementById('math').textContent =
+`p(q) = ${fmt(a)} − ${fmt(b)}q
+I(q) = q·p(q) = ${fmt(a)}q − ${fmt(b)}q²
+C(q) = ${fmt(F)} + ${fmt(m)}q + ${fmt(n)}q²
+
+U(q) = I(q) − C(q) = ${fmt(a-m)}q − ${fmt(b+n)}q² − ${fmt(F)}
+
+U'(q) = ${fmt(a-m)} − ${fmt(2*(b+n))}q
+U'(q) = 0  →  q* = ${fmt(a-m)} / ${fmt(2*(b+n))} = ${fmt(qOpt)}
+
+U''(q) = ${fmt(segundaDerivada)}  (constante, ${segundaDerivada<0 ? 'negativa → máximo' : 'positiva → mínimo'})
+
+U(q*) = ${fmt(utilidadOpt)}`;
+
+  drawChart(a, b, F, m, n, qOpt, utilidadOpt, ingresoOpt, costoOpt);
+
+  result.classList.add('show');
+}
+
+function drawChart(a, b, F, m, n, qOpt, uOpt, iOpt, cOpt){
+  const canvas = document.getElementById('chart');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+
+  const padL = 78, padR = 25, padT = 20, padB = 40;
+  const plotW = W - padL - padR;
+  const plotH = H - padT - padB;
+
+  // dominio: 0 a 2*qOpt (con mínimo razonable si qOpt es muy chico o negativo)
+  const qMax = Math.max(qOpt * 2, 10);
+  const N = 120;
+  const Ufn = q => (a-m)*q - (b+n)*q*q - F;
+  const Ifn = q => q*(a - b*q);
+  const Cfn = q => F + m*q + n*q*q;
+
+  const seriesDefs = [
+    { fn: Cfn, color: '#f87171' },
+    { fn: Ifn, color: '#38bdf8' },
+    { fn: Ufn, color: '#ff6a3d' },
+  ];
+
+  let vMin = Infinity, vMax = -Infinity;
+  const seriesPoints = seriesDefs.map(s => {
+    const pts = [];
+    for (let i=0; i<=N; i++){
+      const q = (qMax * i) / N;
+      const v = s.fn(q);
+      pts.push([q,v]);
+      if (v < vMin) vMin = v;
+      if (v > vMax) vMax = v;
+    }
+    return pts;
+  });
+  vMin = Math.min(vMin, 0);
+  const vRange = (vMax - vMin) || 1;
+
+  const xTo = q => padL + (q / qMax) * plotW;
+  const yTo = v => padT + plotH - ((v - vMin) / vRange) * plotH;
+
+  // eje v = 0
+  ctx.strokeStyle = '#3b4a5c';
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padL, yTo(0));
+  ctx.lineTo(padL+plotW, yTo(0));
+  ctx.stroke();
+
+  // eje q = 0
+  ctx.beginPath();
+  ctx.moveTo(padL, padT);
+  ctx.lineTo(padL, padT+plotH);
+  ctx.stroke();
+
+  // etiquetas eje X (q)
+  ctx.fillStyle = '#8ea0b4';
+  ctx.font = '11px monospace';
+  ctx.textAlign = 'center';
+  for (let i=0; i<=4; i++){
+    const q = (qMax * i) / 4;
+    ctx.fillText(Math.round(q), xTo(q), padT+plotH+16);
+  }
+  ctx.textAlign = 'right';
+  for (let i=0; i<=4; i++){
+    const v = vMin + (vRange * i)/4;
+    ctx.fillText(fmt(Math.round(v)), padL-8, yTo(v)+4);
+  }
+
+  // curvas: costo, ingreso, utilidad (en ese orden, utilidad queda arriba/al frente)
+  seriesDefs.forEach((s, idx) => {
+    ctx.strokeStyle = s.color;
+    ctx.lineWidth = idx === 2 ? 2.8 : 2;
+    ctx.beginPath();
+    seriesPoints[idx].forEach(([q,v], i) => {
+      const x = xTo(q), y = yTo(Math.max(Math.min(v, vMax), vMin));
+      if (i===0) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+    });
+    ctx.stroke();
+  });
+
+  // líneas guía punto óptimo
+  if (qOpt >= 0 && qOpt <= qMax){
+    const px = xTo(qOpt), py = yTo(uOpt);
+    ctx.strokeStyle = '#4ade8066';
+    ctx.setLineDash([4,4]);
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(px, padT); ctx.lineTo(px, padT+plotH); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(padL, py); ctx.lineTo(padL+plotW, py); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // punto óptimo sobre U(q)
+    ctx.fillStyle = '#4ade80';
+    ctx.beginPath();
+    ctx.arc(px, py, 5, 0, Math.PI*2);
+    ctx.fill();
+
+    // puntos de referencia sobre I(q) y C(q) en el mismo q*
+    ctx.fillStyle = '#38bdf8';
+    ctx.beginPath(); ctx.arc(px, yTo(iOpt), 4, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#f87171';
+    ctx.beginPath(); ctx.arc(px, yTo(cOpt), 4, 0, Math.PI*2); ctx.fill();
+
+    ctx.fillStyle = '#e8edf3';
+    ctx.font = 'bold 11px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(`q*=${fmt(qOpt)}`, px+8, py-8);
+  }
+}
+
+calcular();
+</script>
+</body>
+</html>
